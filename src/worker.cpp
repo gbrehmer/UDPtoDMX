@@ -46,12 +46,12 @@ void workerClass::step() {
         newValue = oldValue;
         chStep = queueItem->dimSpeed % 100;
         if (chStep == 0) {
-          chStep = 1;  
+          chStep = 1;
         }
         if (queueItem->dimSpeed >= 200) {
-          chInc = 4;
+          chInc = 8;
         } else if (queueItem->dimSpeed >= 100) {
-          chInc = 2;
+          chInc = 4;
         }  else {
           chInc = 1;
         }  

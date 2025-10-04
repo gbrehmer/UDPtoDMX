@@ -38,22 +38,32 @@ uint8_t minus10(uint16_t value) {
 #define onOffthreshold 10
 
 uint8_t scaleSpeed(uint8_t sp, uint8_t dx, uint8_t dmax) {
-  if ((dx == 0) || (sp == 255) || (dx == dmax)) {
+  if ((dx == 0) || (sp == 255)) {
     return sp;
   } else {    
-    uint8_t f = 1;
-    float q = (float) dmax / (float) dx;
-    uint8_t t = sp * q * 2;
-    uint8_t offset = 0;
-    // switch to smaller dim steps if possible
-    if (t <= 27) {
-      f = 4;
-      offset = 200;
-    } else if (t < 100) {
-      f = 2;
-      offset = 100;
+    uint16_t ret = sp % 100;
+
+    ret = ret * 100;
+
+    ret = ret * dmax / dx;
+    
+    if (sp < 10000 && ret * 4 < 10000) {
+      sp = 100 + (sp * 4);
+      ret = ret * 4;
     }
-    return sp * f * q + offset;
+    if (sp > 10000 && sp < 200 && ret * 2 < 5500) {
+      sp = 200 + ((sp % 100) * 2);
+      ret = ret * 2;
+    }
+    
+    ret = ret / 100;
+
+    if (sp < 200) { 
+      ret = min(ret, uint16_t(99));
+    } else {
+      ret = min(ret, uint16_t(54));
+    }
+    return ret + (sp - (sp % 100));
   } 
 }
 
